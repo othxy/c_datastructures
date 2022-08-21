@@ -1,45 +1,91 @@
 # include <stdio.h>
 # include <stdlib.h>
 
-typedef struct Node_int {
+typedef struct Node__int {
     int data;
-    struct Node_int* next;
-} Node_int;
+    struct Node__int* next;
+} Node__int;
 
-void push_node__int(Node_int** head_ref, int data){
-    Node_int* new_node = (Node_int*)malloc(sizeof(Node_int));
+void erase_linkedlist__int(Node__int** head_ref){
+    Node__int* prev = *head_ref;
+ 
+    while (*head_ref)
+    {
+        *head_ref = (*head_ref)->next;
+        free(prev);
+        prev = *head_ref;
+    }
+}
+
+void push_node__int(Node__int** head_ref, int data){
+    Node__int* new_node = (Node__int*) malloc(sizeof(Node__int));
     new_node->data = data;
     new_node->next = (*head_ref);
     (*head_ref) = new_node;
 }
 
-void insert_node_at_pos__int(Node_int** head_ref, int data, int pos){
-    if (pos < 2){
-        push_node__int(head_ref, data);
-    }
-
-    Node_int* curr_node = *head_ref;
-    Node_int* new_node = (Node_int*)malloc(sizeof(Node_int));
-    new_node->data = data;
-    
-    int counter = 1;
+int len_linkedlist__int(Node__int** head_ref){
+    Node__int* curr_node = *head_ref;
+    int len = 0;
     while (curr_node != NULL){
-        
-        if (counter == (pos - 1)){
-            break;
+        len++;
+    }
+    return len;
+}
+
+void append_node(Node__int** head_ref, int data){
+    Node__int* new_node = (Node__int*)malloc(sizeof(Node__int));
+    new_node->data = data;
+    new_node->next = NULL;
+
+    if(*head_ref == NULL){
+        *head_ref = new_node;
+    }
+    else{
+        Node__int* curr_node = *head_ref;
+            
+        while (curr_node->next != NULL){
+            curr_node = curr_node->next;
         }
         
-        curr_node = curr_node->next;
-        counter++;
+        curr_node->next = new_node;
     }
-    Node_int* tmp = curr_node->next;
-    curr_node->next = new_node;
-    new_node->next = tmp;
 
 }
 
-void print_linkedlist__int(Node_int** head_ref){
-    Node_int* curr_node = *head_ref;
+void insert_node_at_pos__int(Node__int** head_ref, int data, int pos){
+    
+    if (pos < 2 || *head_ref == NULL){
+        push_node__int(head_ref, data);
+    }
+    else{
+        Node__int* new_node = (Node__int*)malloc(sizeof(Node__int));
+        new_node->data = data;
+        
+        Node__int* curr_node = *head_ref;
+
+        int counter = 1;
+        while (curr_node->next != NULL){
+            if (counter == pos-1){
+                break;
+            }
+            curr_node = curr_node->next;        
+            counter++;
+        }
+        
+        if (pos > counter+1){
+            new_node->next = NULL;
+            curr_node->next = new_node;
+        }
+        else {
+            curr_node->next = new_node;
+            new_node->next = curr_node->next;
+        }
+    }
+}
+
+void print_linkedlist__int(Node__int** head_ref){
+    Node__int* curr_node = *head_ref;
     while (curr_node != NULL){
         printf("%d\n", curr_node->data);
         curr_node = curr_node->next;
@@ -48,12 +94,14 @@ void print_linkedlist__int(Node_int** head_ref){
 
 int main(int argc, char **argv){
     
-    Node_int* head = NULL;
-    push_node__int(&head, 2);
-    push_node__int(&head, 45);
-    push_node__int(&head, 23);
+    Node__int* head = NULL;
+    //push_node__int(&head, 2);
+    //push_node__int(&head, 45);
+    //push_node__int(&head, 23);
     push_node__int(&head, 55);
-    insert_node_at_pos__int(&head, 33, 1);
+    //insert_node_at_pos__int(&head, 33, 25);
+    append_node(&head, 77);
+    //erase_linkedlist__int(&head);
     print_linkedlist__int(&head);
     return 0;
 }
